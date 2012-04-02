@@ -1,5 +1,6 @@
 /*
       KMP Pattern matching algorithm
+      dev.kpyc@gmail.com
 */
 
 #include <iostream>
@@ -28,19 +29,34 @@ void computeFailureArray(int* F, string P) {
 
 int main(int argc, char* argv[]) {
 
-   if (argc != 3) { 
+   // multi flag -m
+   bool multi = false;
+   bool noresults = true;
+   
+   argv++;
+   argc--;
+
+   for (int i=0; i<argc; i++) {
+      if (string(argv[0]) == "-m") {
+         multi = true;
+         argv++;
+         argc--;
+      }
+   }
+
+   if (argc != 2) { 
       cerr << "Invalid arguments" << endl;
       cerr << "Usage ./kmp pattern file" << endl;
       return 3;
    }
-   string P = argv[1];
+   string P = argv[0];
    int m = P.length();
    
    ifstream fin;
-   fin.open(argv[2]);
+   fin.open(argv[1]);
    
    if (!fin.is_open()) {
-      cerr << "Unable to open file " << argv[2] << endl;
+      cerr << "Unable to open file " << argv[1] << endl;
       cerr << "Exiting" << endl;
    }
 
@@ -61,12 +77,19 @@ int main(int argc, char* argv[]) {
       }
       if (c == P[j]) {
          if (j == m - 1) {
+            noresults = false;
             char buf[256];
             fin.seekg(line_pos);
             fin.getline(buf,256);
             cout << line_num << ": " << buf << endl;
-            delete F;
-            return 0;           
+            if (!multi) {
+               delete [] F;
+               return 0;
+            } else {
+               j = 0;
+               fin.getline(buf,256);
+               c = fin.get();
+            }          
          } else {
             c = fin.get();
             j++;
@@ -79,6 +102,11 @@ int main(int argc, char* argv[]) {
          }
       }
    }
-   delete F;
-   return 1;
+   if (noresults) {
+      delete [] F;
+      return 1;
+   } else {
+      delete [] F;
+      return 0;
+   }
 }

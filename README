@@ -1,9 +1,15 @@
 A plaintext searching program using the knuth-morris-pratt pattern matching algorithm
 (See http://en.wikipedia.org/wiki/Knuth-Morris-Pratt_algorithm)
 
-Usage ./kmp.exe pattern file
+Usage ./kmp.exe -flags pattern file
 
+Flags:
+   -m : continue searching the file after a match is found
 Returns: the first line in the file containing the specified pattern
+
+UPDATE 1
+- added the -m flag
+- fixed an improper memory deallocation
 
 For serious usage consider using grep (packaged with most if not all linux distros)
 
